@@ -59,3 +59,57 @@ another terminal:
 ```bash
 lsof -ti:8501 -sTCP:LISTEN | xargs kill
 ```
+
+## Running as a systemd service on NixOS
+
+`flake.nix` packages the app with pure Nix (no `uv` involved) and provides a
+NixOS module that runs it as a systemd service. `just-focus` and `zernipax`
+aren't in nixpkgs, so the flake builds them directly from their published PyPI
+wheels; everything else (`streamlit`, `matplotlib`, `numpy`, `jax`, ...) comes
+from nixpkgs.
+
+Add the flake as an input and enable the module in your system configuration:
+
+```nix
+{
+  inputs.psf-viewer.url = "github:<your-username>/psf-viewer"; # or "path:/path/to/psf_viewer"
+
+  outputs = { self, nixpkgs, psf-viewer, ... }: {
+    nixosConfigurations.<hostname> = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        psf-viewer.nixosModules.default
+        {
+          services.psf-viewer = {
+            enable = true;
+            port = 8501;          # default
+            address = "0.0.0.0";  # default; binds to all interfaces for LAN access
+            openFirewall = true;  # opens `port` in the NixOS firewall
+          };
+        }
+        # ...your other modules
+      ];
+    };
+  };
+}
+```
+
+Then rebuild:
+
+```bash
+sudo nixos-rebuild switch --flake .#<hostname>
+```
+
+The service runs under a `DynamicUser`, restarts on failure, and is reachable
+at `http://<server-ip>:8501` from any device on the LAN. Check its status
+with `systemctl status psf-viewer` and logs with `journalctl -u psf-viewer -f`.
+
+You can also build and run the package directly without a full NixOS module,
+e.g. for a quick manual test:
+
+```bash
+nix run .#default -- --server.address=0.0.0.0 --server.port=8501
+```
+
+Note: since this is a flake, any file it needs (`app.py`, `nix/module.nix`)
+must be tracked by `git` (at least `git add`ed) for Nix to see it.
