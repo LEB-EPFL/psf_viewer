@@ -1,5 +1,5 @@
 {
-  description = "PSF Viewer: a Streamlit app for visualizing PSF models from just-focus";
+  description = "Focus Field Viewer: a Streamlit app for visualizing PSF models from just-focus";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -62,17 +62,17 @@
         );
       in
       {
-        packages.default = pkgs.runCommand "psf-viewer" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
-          mkdir -p $out/share/psf-viewer $out/bin
-          cp ${./app.py} $out/share/psf-viewer/app.py
-          makeWrapper ${pythonEnv}/bin/streamlit $out/bin/psf-viewer \
-            --add-flags "run $out/share/psf-viewer/app.py --server.headless true" \
+        packages.default = pkgs.runCommand "focus-field-viewer" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
+          mkdir -p $out/share/focus-field-viewer $out/bin
+          cp ${./app.py} $out/share/focus-field-viewer/app.py
+          makeWrapper ${pythonEnv}/bin/streamlit $out/bin/focus-field-viewer \
+            --add-flags "run $out/share/focus-field-viewer/app.py --server.headless true" \
             --set STREAMLIT_BROWSER_GATHER_USAGE_STATS false
         '';
 
         apps.default = {
           type = "app";
-          program = "${self.packages.${system}.default}/bin/psf-viewer";
+          program = "${self.packages.${system}.default}/bin/focus-field-viewer";
         };
 
         devShells.default = pkgs.mkShell { packages = [ pythonEnv ]; };

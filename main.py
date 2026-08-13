@@ -1,5 +1,5 @@
 def main():
-    print("Hello from psf-viewer!")
+    print("Hello from focus-field-viewer!")
 
 
 if __name__ == "__main__":

@@ -154,8 +154,8 @@ def irradiance_panel(results, half_fov_um: float) -> Figure:
     return fig
 
 
-st.set_page_config(page_title="PSF Viewer", layout="wide")
-st.title("PSF Viewer")
+st.set_page_config(page_title="Focus Field Viewer", layout="wide")
+st.title("Focus Field Viewer")
 
 with st.sidebar:
     st.header("Model")

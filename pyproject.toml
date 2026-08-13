@@ -1,5 +1,5 @@
 [project]
-name = "psf-viewer"
+name = "focus-field-viewer"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"

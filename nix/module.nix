@@ -4,16 +4,16 @@ self:
 with lib;
 
 let
-  cfg = config.services.psf-viewer;
+  cfg = config.services.focus-field-viewer;
 in
 {
-  options.services.psf-viewer = {
-    enable = mkEnableOption "PSF Viewer, a Streamlit app for visualizing PSF models";
+  options.services.focus-field-viewer = {
+    enable = mkEnableOption "Focus Field Viewer, a Streamlit app for visualizing PSF models";
 
     package = mkOption {
       type = types.package;
       default = self.packages.${pkgs.system}.default;
-      description = "The psf-viewer package to run.";
+      description = "The focus-field-viewer package to run.";
     };
 
     address = mkOption {
@@ -36,8 +36,8 @@ in
   };
 
   config = mkIf cfg.enable {
-    systemd.services.psf-viewer = {
-      description = "PSF Viewer";
+    systemd.services.focus-field-viewer = {
+      description = "Focus Field Viewer";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
 
@@ -46,7 +46,7 @@ in
       };
 
       serviceConfig = {
-        ExecStart = "${cfg.package}/bin/psf-viewer --server.address=${cfg.address} --server.port=${toString cfg.port}";
+        ExecStart = "${cfg.package}/bin/focus-field-viewer --server.address=${cfg.address} --server.port=${toString cfg.port}";
         Restart = "on-failure";
         RestartSec = 5;
 

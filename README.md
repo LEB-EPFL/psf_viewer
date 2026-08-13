@@ -1,4 +1,4 @@
-# PSF Viewer
+# Focus Field Viewer
 
 A Streamlit app for interactively visualizing point spread function (PSF) models
 from the `just-focus` library in a high-NA microscope objective.
@@ -72,15 +72,15 @@ Add the flake as an input and enable the module in your system configuration:
 
 ```nix
 {
-  inputs.psf-viewer.url = "github:<your-username>/psf-viewer"; # or "path:/path/to/psf_viewer"
+  inputs.focus-field-viewer.url = "github:<your-username>/focus-field-viewer"; # or "path:/path/to/focus_field_viewer"
 
-  outputs = { self, nixpkgs, psf-viewer, ... }: {
+  outputs = { self, nixpkgs, focus-field-viewer, ... }: {
     nixosConfigurations.<hostname> = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        psf-viewer.nixosModules.default
+        focus-field-viewer.nixosModules.default
         {
-          services.psf-viewer = {
+          services.focus-field-viewer = {
             enable = true;
             port = 8501;          # default
             address = "0.0.0.0";  # default; binds to all interfaces for LAN access
@@ -102,7 +102,7 @@ sudo nixos-rebuild switch --flake .#<hostname>
 
 The service runs under a `DynamicUser`, restarts on failure, and is reachable
 at `http://<server-ip>:8501` from any device on the LAN. Check its status
-with `systemctl status psf-viewer` and logs with `journalctl -u psf-viewer -f`.
+with `systemctl status focus-field-viewer` and logs with `journalctl -u focus-field-viewer -f`.
 
 You can also build and run the package directly without a full NixOS module,
 e.g. for a quick manual test:
